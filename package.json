@@ -1,0 +1,28 @@
+{
+  "name": "muster",
+  "version": "0.0.1",
+  "packageManager": "pnpm@11.5.2",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "muster": "dist/src/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --test test/**/*.test.ts",
+    "muster": "tsx src/cli.ts"
+  },
+  "dependencies": {
+    "@cursor/sdk": "^1.0.30",
+    "@openai/codex-sdk": "^0.150.1",
+    "tsx": "^4.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}
