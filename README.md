@@ -43,16 +43,44 @@ A sortie requests task types rather than naming providers. Muster reads `~/.conf
 
 Cursor's supported Grok model IDs are `grok-4.6` and `grok-4.5`. Grok 4.6 is the default. Model access still depends on the Cursor account used to authenticate the SDK.
 
-To use the earlier Claude implementation and Codex verification pairing, save this as `~/.config/muster/routing.json`:
+To split logic and UI work between Grok and Opus, with Astra verifying both, save this as `~/.config/muster/routing.json`:
 
 ```json
 {
   "taskTypes": {
-    "implementation": [{ "provider": "claude" }],
-    "verification": [{ "provider": "codex" }]
+    "implementation": [{ "provider": "claude", "model": "claude-opus-5-5" }],
+    "logic-implementation": [{ "provider": "cursor", "model": "grok-4.6" }],
+    "ui-implementation": [{ "provider": "claude", "model": "claude-opus-5-5" }],
+    "verification": [{ "provider": "codex", "model": "gpt-6-astra" }]
   }
 }
 ```
+
+Each task can set `taskType`. Omitted values use `roles.implementer.taskType`, so existing sorties keep their default. The orchestrator assigns task types and dependencies; the runtime does not classify tasks or restrict implementation routes to particular directories. For example, inside a sortie:
+
+```ts
+roles: {
+  implementer: { taskType: "implementation" },
+  verifier: { taskType: "verification" },
+},
+tasks: [
+  {
+    id: "health-endpoint",
+    title: "Implement health endpoint",
+    taskType: "logic-implementation",
+    prompt: "Add GET /health and focused tests.",
+  },
+  {
+    id: "health-ui",
+    title: "Show service health",
+    taskType: "ui-implementation",
+    dependsOn: ["health-endpoint"],
+    prompt: "Build a health indicator using GET /health and the existing UI conventions.",
+  },
+],
+```
+
+`muster inspect` shows each task's effective type and ordered routes. Launch checks every task's mapping, including Cursor access for per-task routes, before dispatch. Missing mappings fail; they do not fall back to the default implementer. Automatic contract repair rounds use the sortie's default implementer, which is Opus in this configuration. Verification always uses `roles.verifier` with read-only authority. Routing remains local configuration and is read again during execution and resume.
 
 Claude uses its default model unless a route includes `model`. Claude workers have Read, Glob, Grep, Edit, and Write tools; Claude verifiers have only Read, Glob, and Grep. A pre-tool hook checks paths against the assigned worktree, including symlink targets, and denies Git metadata access. Shell, MCP, and delegation tools are unavailable. The runtime runs command checks. The adapter persists sessions, forwards cancellation, and rejects failed or incomplete SDK results.
 

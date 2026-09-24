@@ -9,6 +9,7 @@ Iteration status: unverified first iteration. Deterministic checks pass, but no 
 - [x] Passing work can open an evidence-bearing draft PR; failed work produces a report without a PR.
 - [x] Runs can drain into pause, resume from durable state, or cancel while preserving work.
 - [x] Personal task-type routing selects Cursor, Claude, or Codex without embedding providers in sorties.
+- [x] Per-task implementation types support Grok logic and Opus UI in one sortie, with default-role inheritance, launch validation, and independent verification. Deterministic coverage passes; the mixed live-provider run is pending.
 - [x] Claude provider restored with scoped file tools, read-only verification, session resume, and cancellation checks. A live Claude smoke test wrote a file, resumed the session with read-only tools, and verified it without mutation. The full first sortie is still pending.
 - [x] Project audit recorded in `reports/project-audit.html`, with 11 findings and eight reproduction probes.
 - [ ] Resolve the audit's acceptance and recovery failures, including checks against uncommitted files, lost unfinished work on resume, and workers outliving the event store.

@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { resolve } from "node:path";
-import type { Provider, Role, RouteCandidate } from "./types.js";
+import type { Provider, Role, RouteCandidate, Sortie, Task } from "./types.js";
 
 export type RoutingConfig = {
   taskTypes: Record<string, RouteCandidate[]>;
@@ -42,6 +42,24 @@ export function routesFor(role: Role, config = loadRouting()): RouteCandidate[] 
     throw new Error(`No approved route configured for task type: ${role.taskType}`);
   }
   return candidates;
+}
+
+export function implementationRole(task: Task, fallback: Role): Role {
+  return { taskType: task.taskType ?? fallback.taskType };
+}
+
+export function resolveSortieRouting(sortie: Sortie, config = loadRouting()) {
+  const resolveRole = (role: Role) => ({ taskType: role.taskType, routes: routesFor(role, config) });
+  return {
+    roles: {
+      implementer: resolveRole(sortie.roles.implementer),
+      verifier: resolveRole(sortie.roles.verifier),
+    },
+    tasks: sortie.tasks.map((task) => ({
+      id: task.id,
+      ...resolveRole(implementationRole(task, sortie.roles.implementer)),
+    })),
+  };
 }
 
 function validateCandidate(candidate: RouteCandidate, path: string, taskType: string): void {

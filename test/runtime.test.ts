@@ -6,6 +6,9 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { command } from "../src/process.js";
 import { loadRouting, routesFor } from "../src/routing.js";
+import type { RoutingConfig } from "../src/routing.js";
+import { ScriptedAdapter } from "../src/adapters/scripted.js";
+import type { Task, WorkerRequest } from "../src/types.js";
 import { contractSnapshot, executeRun, loadSortie } from "../src/runtime.js";
 import { EventStore } from "../src/store.js";
 
@@ -112,6 +115,69 @@ test("routing accepts Cursor and Claude and rejects unknown providers", async ()
   }
 });
 
+test("mixed tasks dispatch their models, inherit the default, and retain independent verification and repairs", async (t) => {
+  const requests: Array<{ id: string; model: string | undefined; readOnly: boolean }> = [];
+  const original = ScriptedAdapter.prototype.run;
+  t.mock.method(ScriptedAdapter.prototype, "run", async function (this: ScriptedAdapter, request: WorkerRequest) {
+    requests.push({ id: request.taskId, model: request.model, readOnly: request.readOnly });
+    if (request.taskId === "ui") await readFile(join(request.cwd, "logic.txt"), "utf8");
+    return original.call(this, request);
+  });
+  const fixture = await createFixture({
+    failingCheck: false, maxRepairRounds: 1, repairRequired: true,
+    tasks: [
+      { id: "logic", title: "Logic", prompt: "Create logic", taskType: "logic-implementation" },
+      { id: "ui", title: "UI", prompt: "Create UI", taskType: "ui-implementation", dependsOn: ["logic"] },
+      { id: "inherited", title: "Default", prompt: "Use default", dependsOn: ["ui"] },
+    ],
+    routing: { taskTypes: {
+      implementation: [{ provider: "scripted", model: "default-model" }],
+      "logic-implementation": [{ provider: "scripted", model: "logic-model" }],
+      "ui-implementation": [{ provider: "scripted", model: "ui-model" }],
+      verification: [{ provider: "scripted", model: "verifier-model" }],
+    } },
+  });
+  const cli = fileURLToPath(new URL("../src/cli.ts", import.meta.url));
+  const inspected = await command(process.execPath, ["--import", import.meta.resolve("tsx"), cli, "inspect", join(fixture.repo, "fixture.sortie.ts")], { cwd: fixture.repo });
+  const inspection: unknown = JSON.parse(inspected.stdout);
+  assert.ok(typeof inspection === "object" && inspection !== null && "tasks" in inspection);
+  assert.deepEqual(inspection.tasks, [
+    { id: "logic", taskType: "logic-implementation", routes: [{ provider: "scripted", model: "logic-model" }] },
+    { id: "ui", taskType: "ui-implementation", routes: [{ provider: "scripted", model: "ui-model" }] },
+    { id: "inherited", taskType: "implementation", routes: [{ provider: "scripted", model: "default-model" }] },
+  ]);
+  await executeRun(fixture.repo, fixture.runId);
+  const store = new EventStore(fixture.repo);
+  try { assert.equal(store.getRun(fixture.runId)?.status, "succeeded"); } finally { store.close(); }
+  assert.deepEqual(requests, [
+    { id: "logic", model: "logic-model", readOnly: false },
+    { id: "ui", model: "ui-model", readOnly: false },
+    { id: "inherited", model: "default-model", readOnly: false },
+    { id: "verify-criterion-review", model: "verifier-model", readOnly: true },
+    { id: "repair-1", model: "default-model", readOnly: false },
+    { id: "verify-criterion-review", model: "verifier-model", readOnly: true },
+  ]);
+});
+
+test("unmapped task types fail inspection, launch, and execution before dispatch", async () => {
+  const fixture = await createFixture({ failingCheck: false, maxRepairRounds: 0, tasks: [
+    { id: "implement", title: "Unknown route", prompt: "Do not run", taskType: "missing" },
+  ] });
+  const cli = fileURLToPath(new URL("../src/cli.ts", import.meta.url));
+  await command("git", ["add", "routing.json"], { cwd: fixture.repo });
+  await command("git", ["-c", "user.name=Test", "-c", "user.email=test@example.com", "commit", "-m", "test routing"], { cwd: fixture.repo });
+  for (const subcommand of ["inspect", "launch"]) {
+    await assert.rejects(command(process.execPath, ["--import", import.meta.resolve("tsx"), cli, subcommand,
+      join(fixture.repo, "fixture.sortie.ts"), "--approve"], { cwd: fixture.repo }), /No approved route configured for task type: missing/);
+  }
+  await executeRun(fixture.repo, fixture.runId);
+  const store = new EventStore(fixture.repo);
+  try {
+    assert.equal(store.getRun(fixture.runId)?.status, "failed");
+    assert.equal(store.events(fixture.runId).some((event) => event.type === "task.started" || event.type === "integration.created"), false);
+  } finally { store.close(); }
+});
+
 async function createCliFixture(prompt: string): Promise<{ repo: string; runId: string }> {
   const repo = await mkdtemp(join(tmpdir(), "muster-cli-test-"));
   await command("git", ["init", "-b", "main"], { cwd: repo });
@@ -154,7 +220,7 @@ async function waitForStatus(repo: string, runId: string, statuses: string[]): P
   return status;
 }
 
-async function createFixture(options: { failingCheck: boolean; maxRepairRounds: number; repairRequired?: boolean }): Promise<{
+async function createFixture(options: { failingCheck: boolean; maxRepairRounds: number; repairRequired?: boolean; tasks?: Task[]; routing?: RoutingConfig }): Promise<{
   repo: string;
   runId: string;
   branch: string;
@@ -184,7 +250,7 @@ async function createFixture(options: { failingCheck: boolean; maxRepairRounds: 
         verifier: { taskType: "verification" }
       },
       limits: { maxConcurrency: 1, maxTaskAttempts: 1, maxRepairRounds: ${options.maxRepairRounds} },
-      tasks: [{ id: "implement", title: "Implement fixture", prompt: "Create the requested fixture" }],
+      tasks: ${JSON.stringify(options.tasks ?? [{ id: "implement", title: "Implement fixture", prompt: "Create the requested fixture" }])},
       pullRequest: { enabled: false }
     };
   `, "utf8");
@@ -192,7 +258,7 @@ async function createFixture(options: { failingCheck: boolean; maxRepairRounds: 
   await command("git", ["-c", "user.name=Test", "-c", "user.email=test@example.com", "commit", "-m", "initial"], { cwd: repo });
 
   const routingPath = join(repo, "routing.json");
-  await writeFile(routingPath, JSON.stringify({
+  await writeFile(routingPath, JSON.stringify(options.routing ?? {
     taskTypes: {
       implementation: [{ provider: "scripted" }],
       verification: [{ provider: "scripted" }],

@@ -21,6 +21,7 @@ export type Task = {
   id: string;
   title: string;
   prompt: string;
+  taskType?: string;
   dependsOn?: string[];
 };
 
@@ -92,6 +93,9 @@ export function defineSortie(sortie: Sortie): ResolvedSortie {
 
   const taskIds = new Set(sortie.tasks.map((task) => task.id));
   for (const task of sortie.tasks) {
+    if (task.taskType !== undefined && (typeof task.taskType !== "string" || !task.taskType.trim())) {
+      throw new Error(`Task ${task.id} needs a non-empty taskType`);
+    }
     for (const dependency of task.dependsOn ?? []) {
       if (!taskIds.has(dependency)) {
         throw new Error(`Task ${task.id} depends on unknown task ${dependency}`);

@@ -17,7 +17,7 @@ import {
   worktreePaths,
 } from "./git.js";
 import { command, shell } from "./process.js";
-import { routesFor } from "./routing.js";
+import { implementationRole, resolveSortieRouting, routesFor } from "./routing.js";
 import { EventStore } from "./store.js";
 import type { RunRecord } from "./store.js";
 import { defineSortie } from "./types.js";
@@ -67,6 +67,7 @@ export async function executeRun(repoRoot: string, runId: string): Promise<void>
     if (snapshot.hash !== run.contract_hash) {
       throw new Error("The sortie acceptance contract changed after approval. Launch a new run and approve it again.");
     }
+    resolveSortieRouting(sortie);
     store.updateRun(runId, { status: "running", pid: process.pid, message: "Running" });
     store.event(runId, "run.started", { pid: process.pid });
 
@@ -201,7 +202,7 @@ async function executeTaskGraph(
 
     const baseSha = await currentSha(integration);
     const results = await Promise.all(ready.map((task) =>
-      produceTask(store, run, task, sortie.roles.implementer, baseSha, sortie.limits.maxTaskAttempts, signal),
+      produceTask(store, run, task, implementationRole(task, sortie.roles.implementer), baseSha, sortie.limits.maxTaskAttempts, signal),
     ));
     for (const result of results) {
       await cherryPick(integration, result.commitSha);

@@ -10,7 +10,7 @@ import { assertClean, assertGitRepository, ensureRef } from "./git.js";
 import { assertCursorReady } from "./adapters/cursor.js";
 import { command } from "./process.js";
 import { contractSnapshot, executeRun, loadSortie } from "./runtime.js";
-import { routesFor, routingPath } from "./routing.js";
+import { resolveSortieRouting, routingPath } from "./routing.js";
 import { EventStore } from "./store.js";
 import type { RunRecord } from "./store.js";
 
@@ -41,10 +41,7 @@ async function inspect(args: string[]): Promise<void> {
     contractHash: snapshot.hash,
     contract: sortie.contract,
     routingFile: routingPath(),
-    roles: Object.fromEntries(Object.entries(sortie.roles).map(([name, role]) => [name, {
-      taskType: role.taskType,
-      routes: routesFor(role),
-    }])),
+    ...resolveSortieRouting(sortie),
     limits: sortie.limits,
     pullRequest: sortie.pullRequest,
   }, null, 2));
@@ -65,8 +62,9 @@ async function launch(args: string[]): Promise<void> {
     : sortie.repository.baseBranch;
   if (!baseBranch) throw new Error("The repository is on a detached HEAD. Set repository.baseBranch in the sortie.");
   await ensureRef(repoRoot, baseBranch);
-  const cursorRoutes = Object.values(sortie.roles)
-    .flatMap((role) => routesFor(role))
+  const routing = resolveSortieRouting(sortie);
+  const cursorRoutes = [...Object.values(routing.roles), ...routing.tasks]
+    .flatMap((role) => role.routes)
     .filter((route) => route.provider === "cursor");
   if (cursorRoutes.length > 0) {
     await assertCursorReady(cursorRoutes.map((route) => route.model));
