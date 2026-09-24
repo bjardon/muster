@@ -1,0 +1,45 @@
+{
+  "date": "2026-09-11",
+  "observations": [
+    {
+      "id": "F04",
+      "probe": "Empty contract",
+      "observed": "Run succeeded with zero tasks and zero checks."
+    },
+    {
+      "id": "F01",
+      "probe": "Check writes a required artifact",
+      "observed": "Run succeeded, but only-in-check.txt is absent from the accepted branch."
+    },
+    {
+      "id": "F04",
+      "probe": "Task named integration",
+      "observed": "Worker path collided with integration path; failure cleanup deleted the integration worktree."
+    },
+    {
+      "id": "F02",
+      "probe": "Resume with an interrupted worker worktree",
+      "observed": "Attempt 2 failed creating the occupied path, exhausted retries, and deleted unfinished.txt."
+    },
+    {
+      "id": "F03",
+      "probe": "Recovery after cherry-pick before DB update",
+      "observed": "Applied worker commit was not an ancestor; recovery tried it again and failed on an empty cherry-pick."
+    },
+    {
+      "id": "F07",
+      "probe": "Codex streamed turn.failed",
+      "observed": "Adapter resolved successfully with empty finalText after a provider failure event."
+    },
+    {
+      "id": "F08",
+      "probe": "Move base ref after recording run",
+      "observed": "Accepted branch included a commit added after run creation; no base SHA was pinned."
+    },
+    {
+      "id": "F05",
+      "probe": "One concurrent task fails while another is active",
+      "observed": "executeRun returned failed before slow worker finished; its later event hit a closed database."
+    }
+  ]
+}

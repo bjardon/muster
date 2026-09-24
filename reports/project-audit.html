@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Muster · Project audit</title>
+<style>
+:root{--ink:#182d32;--muted:#52686d;--paper:#f4f5ef;--card:#fff;--line:#d7dfd9;--green:#176454;--high:#ac3828;--medium:#8b6210;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:var(--green);text-underline-offset:3px}a:hover{text-decoration-thickness:2px}button,input{font:inherit}header{padding:64px max(24px,calc((100vw - 1120px)/2));background:#183d3d;color:#fff;border-bottom:7px solid #b8db79}header .eyebrow{color:#bdd9c8}.eyebrow{text-transform:uppercase;letter-spacing:.14em;font:12px/1.5 var(--mono)}h1{font-size:clamp(38px,6vw,68px);line-height:1.05;letter-spacing:-.05em;margin:18px 0 24px}header p{max-width:780px;font-size:20px;color:#dce8e2}header .meta{font:12px/1.8 var(--mono);color:#bdd9c8;overflow-wrap:anywhere}main{max-width:1168px;margin:auto;padding:32px 24px 80px}nav{display:flex;flex-wrap:wrap;gap:12px 24px;margin-bottom:36px;font-size:14px}h2{font-size:30px;line-height:1.2;letter-spacing:-.025em;margin:0 0 20px}h3{font-size:21px;line-height:1.3;margin:12px 0}h4{font-size:14px;margin:20px 0 5px}p{margin:10px 0 16px}section{margin:0 0 48px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:36px}.stat{padding:20px;border:1px solid var(--line);border-radius:10px;background:var(--card)}.stat strong{display:block;font-size:34px;line-height:1.2}.stat span{font-size:13px;color:var(--muted)}.overview{display:grid;grid-template-columns:1.5fr 1fr;gap:28px}.note{background:#e7edde;border-left:4px solid var(--green);padding:20px 24px;border-radius:0 8px 8px 0}.note p:last-child{margin-bottom:0}.muted,small{color:var(--muted)}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0}.flow div{border-top:3px solid var(--green);background:white;padding:16px;font-size:14px}.flow b{display:block;margin-bottom:8px}.flow code{font-size:12px}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}table{width:100%;border-collapse:collapse;background:white;text-align:left;font-size:14px}th,td{padding:16px;vertical-align:top;border-bottom:1px solid var(--line)}th{background:#e8ede7;font-size:12px;text-transform:uppercase;letter-spacing:.06em}tr:last-child td{border-bottom:0}td:first-child{min-width:170px}.toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:20px}.toolbar button{border:1px solid var(--line);border-radius:24px;padding:7px 16px;background:white;color:var(--ink);cursor:pointer}.toolbar button[aria-pressed=true]{background:var(--ink);color:white}.toolbar input{min-width:180px;flex:1;border:1px solid var(--line);padding:8px 14px;border-radius:7px;background:white}.toolbar output{font-size:13px;color:var(--muted)}.finding{padding:26px 30px;background:white;border:1px solid var(--line);border-radius:12px;margin-bottom:16px;break-inside:avoid}.finding:target{outline:3px solid #a2c2a2}.finding[hidden]{display:none}.labels{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font:11px/1.5 var(--mono);text-transform:uppercase;letter-spacing:.035em}.tag{padding:4px 8px;background:#edf1ed;border-radius:4px}.high{background:#fae9e4;color:var(--high)}.medium{background:#fff0d5;color:var(--medium)}.proof{background:#e9f4ec;color:#216041}.finding h3 a{color:inherit;text-decoration:none}.refs{font:12px/1.8 var(--mono);color:var(--muted);overflow-wrap:anywhere}.details{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}.observed{border-left:3px solid #96bb8d;padding:8px 16px;background:#f0f5ed;font-size:14px}.finding ul{padding-left:20px}.finding li{margin:5px 0}code{font-family:var(--mono);font-size:.86em;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#183d3d;color:#e5efe8;padding:20px;border-radius:8px;font:13px/1.7 var(--mono)}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.step{border:1px solid var(--line);border-radius:10px;background:white;padding:22px}.step .number{font:12px var(--mono);color:var(--green)}footer{border-top:1px solid var(--line);padding-top:20px;font-size:13px;color:var(--muted)}:focus-visible{outline:3px solid #a36816;outline-offset:3px}@media(max-width:760px){header{padding:40px 24px}.stats{grid-template-columns:1fr 1fr}.overview,.details,.steps{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}.finding{padding:22px}h2{font-size:26px}header p{font-size:18px}}@media print{body{background:white;font-size:11px}header{padding:24px;color:#182d32;background:white;border-bottom:2px solid}header p,header .meta,header .eyebrow{color:#52686d}h1{font-size:36px}h2{font-size:24px}h3{font-size:18px}main{padding:24px 0}nav,.toolbar{display:none}.finding[hidden]{display:block}.finding{padding:18px;margin-bottom:14px}.stats{margin-bottom:24px}.stat strong{font-size:25px}section{margin-bottom:28px}a{color:inherit}pre{color:#182d32;background:#eee}.steps{display:block}.step{margin-bottom:10px}}
+</style>
+</head>
+<body>
+<header>
+<div class="eyebrow">Engineering review / 11 September 2026</div>
+<h1>Muster project audit</h1>
+<p>The core design fits the experiment. Recovery and acceptance need stronger guarantees before a live run can be trusted.</p>
+<div class="meta">Reviewed commit 69a77b70ef55a1569deaa3a3bd010893d22b7541<br>11 source files · 1,327 source lines · 219 test lines · Local audit, no provider calls</div>
+</header>
+<main>
+<nav aria-label="Report sections"><a href="#assessment">Assessment</a><a href="#architecture">Architecture</a><a href="#findings">Findings</a><a href="#sequence">Recommended order</a><a href="#verification">Verification &amp; limits</a></nav>
+<div class="stats" aria-label="Audit summary">
+<div class="stat"><strong>11</strong><span>Prioritized findings</span></div>
+<div class="stat"><strong>7</strong><span>High priority · 4 medium</span></div>
+<div class="stat"><strong>8</strong><span>Reproduction probes passed</span></div>
+<div class="stat"><strong>7 / 7</strong><span>Existing tests pass</span></div>
+</div>
+<section id="assessment">
+<h2>Keep the design. Tighten the execution rules.</h2>
+<div class="overview"><div><p>Muster is appropriately small for a personal experiment. The sortie describes intent, provider adapters do the work, and the runtime controls integration and acceptance. SQLite and local Git worktrees are sensible choices. I found little outright over-engineering.</p><p>The main problem is that the runtime's state transitions span SQLite, Git, provider sessions, and child processes without enough recovery rules. A clean happy path works, but interrupted and overlapping operations can lose work or report the wrong outcome.</p><p>The most serious acceptance issue is independent of crashes. Command checks can modify the integration worktree, pass, and leave the accepted branch without the files they tested. Fix this before relying on an evidence-bearing PR.</p></div>
+<aside class="note"><strong>What to preserve</strong><p>Keep isolated worker worktrees, Cursor's sandbox and tool restrictions, Codex's sandbox, ordered routing, bounded attempts, and the draft-only PR rule.</p><p>Keep the trusted-host limitation explicit. This audit does not establish protection against malicious repositories or prove live SDK sandbox behavior.</p></aside></div>
+</section>
+<section id="architecture">
+<h2>Where the architecture helps, and where it leaks</h2>
+<div class="flow" aria-label="Current execution flow">
+<div><b>1 · Approve</b><code>cli.ts → types.ts</code><br>Load sortie, inspect contract, resolve routes.</div>
+<div><b>2 · Dispatch</b><code>runtime.ts → adapters/</code><br>Choose work, create worktrees, run agents.</div>
+<div><b>3 · Integrate &amp; verify</b><code>runtime.ts → git.ts</code><br>Cherry-pick work, execute checks, repair.</div>
+<div><b>4 · Record &amp; publish</b><code>store.ts + git.ts</code><br>Save state and evidence, push a draft PR.</div>
+</div>
+<div class="table-wrap"><table><thead><tr><th>Module</th><th>Assessment</th><th>Smallest useful change</th></tr></thead><tbody>
+<tr><td><code>runtime.ts</code><br>430 lines</td><td>Highest-risk implementation. Normal tasks, repair recovery, verifier retries, and cleanup each encode lifecycle rules. Size alone is not the issue; the same invariants are spread across different paths.</td><td>Share one assignment lifecycle for implementation and repair. Share one recoverable integration operation. Keep scheduling and repair policy in the runtime.</td></tr>
+<tr><td><code>store.ts</code><br>154 lines</td><td>The database is useful; its interface exposes too much. Untyped task records and arbitrary field updates make callers responsible for column names, valid states, and event ordering.</td><td>Add typed task/check records and a few explicit transitions that update state and append an event in one SQLite transaction. Avoid an ORM or generic workflow framework.</td></tr>
+<tr><td><code>git.ts</code><br>93 lines</td><td>Mostly thin wrappers. Callers still need to understand cherry-pick identity, cleanup ownership, and interrupted worktree creation. These are the difficult parts the module should hide.</td><td>Make worktree ownership and integration recovery part of its interface. Delete unused wrappers or locals only as incidental cleanup.</td></tr>
+<tr><td><code>adapters/</code><br>182 lines</td><td>A justified seam with two real providers and a deterministic fake. Success, cancellation, and session identity differ in ways the runtime currently ignores.</td><td>Normalize terminal success and failure. Persist provider-qualified sessions. Allow a test adapter factory to be passed in; keep the fake out of normal production routing.</td></tr>
+<tr><td><code>types.ts + routing.ts</code><br>192 lines</td><td>Simple enough, but runtime validation is incomplete and routing reloads on each dispatch. The default Cursor model appears both here and in its adapter.</td><td>Validate and resolve once at launch, then persist the resolved run plan. Centralize the model default. No configurable validation framework is needed.</td></tr>
+<tr><td><code>cli.ts + process.ts</code><br>276 lines</td><td>The small CLI needs no command framework. Runner ownership and subprocess lifetime are under-specified, not overbuilt.</td><td>Claim a run atomically and supervise child completion. Close stores and log descriptors in <code>finally</code> blocks.</td></tr>
+</tbody></table></div>
+<p class="muted">The README calls resume an event-log operation, but the runtime resumes from mutable task rows and the current sortie file. Events are an audit trail, not a replay mechanism. Document that model and make row transitions atomic; building full event sourcing would add unnecessary process.</p>
+</section>
+<section id="findings">
+<h2>Prioritized findings</h2>
+<p>High priority means the issue can undermine acceptance, lose unfinished work, or leave execution outside runtime control. Medium priority covers reproducibility, fallback, and bounded resource use. “Reproduced” means a local probe demonstrated the behavior; “code review” means the trigger follows from the implementation but was not exercised end to end.</p>
+<div class="toolbar" aria-label="Filter findings">
+<button type="button" data-filter="all" aria-pressed="true">All</button><button type="button" data-filter="high" aria-pressed="false">High</button><button type="button" data-filter="medium" aria-pressed="false">Medium</button><button type="button" data-filter="reproduced" aria-pressed="false">Reproduced</button>
+<input type="search" id="search" aria-label="Search findings" placeholder="Search modules or findings"><output id="count" aria-live="polite">11 findings</output>
+</div>
+
+<article class="finding" id="F01" data-priority="high" data-proof="reproduced">
+<div class="labels"><span>F01</span><span class="tag high">High</span><span class="tag proof">Reproduced</span><span>Acceptance</span></div>
+<h3><a href="#F01">Checks can pass against files absent from the accepted branch</a></h3>
+<p class="refs"><a href="../src/runtime.ts">src/runtime.ts</a> lines 127–146, 295–303 · <a href="../src/git.ts">src/git.ts</a> lines 28–30</p>
+<p>Command criteria execute directly in the integration worktree. The runtime records exit code zero as success, then pushes its Git branch and force-removes the worktree. It never checks whether the commands changed tracked files or created uncommitted source files.</p>
+<p class="observed">Probe: a check created <code>only-in-check.txt</code> and verified that it existed. The run succeeded. <code>git show muster/audit:only-in-check.txt</code> failed because the accepted branch did not contain it.</p>
+<div class="details"><div><h4>Smallest reliable fix</h4><p>Verify a specific commit in a disposable verification worktree. Reject tracked changes and non-ignored additions after checks. Permit ordinary ignored build output. Record the verified SHA and require that exact SHA before push.</p></div><div><h4>Regression to add</h4><p>A check that rewrites a source file or creates a required file must not produce acceptance. A check that only creates ignored build output should still pass.</p></div></div>
+</article>
+
+<article class="finding" id="F02" data-priority="high" data-proof="reproduced">
+<div class="labels"><span>F02</span><span class="tag high">High</span><span class="tag proof">Reproduced</span><span>Recovery / data loss</span></div>
+<h3><a href="#F02">Resuming an interrupted assignment can delete its unfinished work</a></h3>
+<p class="refs"><a href="../src/runtime.ts">src/runtime.ts</a> lines 224–250 · <a href="../src/git.ts">src/git.ts</a> lines 23–30</p>
+<p>An assignment persists its attempt number before creating its worktree. On resume, <code>produceTask</code> increments that number and tries to create a new branch at the same path. If the old worktree remains after a crash, creation fails and the catch block force-removes that path. With the default two attempts, a crash during attempt one can exhaust the task without invoking a resumed worker.</p>
+<p class="observed">Probe: seeded the durable state of an interrupted first attempt and an uncommitted <code>unfinished.txt</code>. Resume exhausted attempt two and deleted the file.</p>
+<div class="details"><div><h4>Smallest reliable fix</h4><p>Reconcile an existing assignment before allocating another attempt. Resume its owned worktree and compatible provider session. Preserve failed or cancelled worktrees until their changes are saved or deliberately discarded. Cleanup must not run merely because creation failed.</p></div><div><h4>Regression to add</h4><p>Terminate after worktree creation, during editing, and after commit creation. Resume must preserve edits and must not spend an extra attempt solely to discover an occupied path. Also test an agent that commits its own changes; <code>commitChanges</code> currently treats a clean index as no work.</p></div></div>
+</article>
+
+<article class="finding" id="F03" data-priority="high" data-proof="reproduced">
+<div class="labels"><span>F03</span><span class="tag high">High</span><span class="tag proof">Reproduced</span><span>Integration recovery</span></div>
+<h3><a href="#F03">Cherry-pick recovery uses a commit identity that does not survive integration</a></h3>
+<p class="refs"><a href="../src/runtime.ts">src/runtime.ts</a> lines 149–165, 180–209 · <a href="../src/git.ts">src/git.ts</a> lines 46–56</p>
+<p>A worker commit cherry-picked onto a changed integration branch gets a different SHA. If the process dies between cherry-pick and <code>status: completed</code>, recovery tests whether the original worker SHA is an ancestor. It usually is not, so recovery cherry-picks the same change again and fails.</p>
+<p class="observed">Probe: applied a worker commit after another integration commit. <code>containsCommit</code> returned false, and replay failed on an empty cherry-pick.</p>
+<div class="details"><div><h4>Smallest reliable fix</h4><p>Give each integrated commit a durable assignment marker, and reconcile that marker before replay. Persist the resulting integration SHA. Handle an interrupted cherry-pick explicitly. A recorded result SHA alone cannot close the crash window before the database update.</p></div><div><h4>Regression to add</h4><p>Use two independent tasks from the same base. Interrupt after each cherry-pick and before each completion update. Resume should integrate every task exactly once. Reuse the same operation for repair tasks.</p></div></div>
+</article>
+
+<article class="finding" id="F04" data-priority="high" data-proof="reproduced">
+<div class="labels"><span>F04</span><span class="tag high">High</span><span class="tag proof">Reproduced</span><span>Input validation</span></div>
+<h3><a href="#F04">Valid task IDs can collide with runtime-owned state and paths</a></h3>
+<p class="refs"><a href="../src/types.ts">src/types.ts</a> lines 87–115 · <a href="../src/git.ts">src/git.ts</a> lines 86–92 · <a href="../src/runtime.ts">src/runtime.ts</a> lines 110–115, 149–152, 305–311</p>
+<p><code>integration</code> is a valid task ID and resolves to the integration worktree itself. <code>repair-1</code> and <code>verify-…</code> can overlap runtime-generated task IDs in SQLite. Validation also accepts an empty acceptance contract and leaves dependency cycles to fail only after launch.</p>
+<p class="observed">Two probes: a task named <code>integration</code> caused cleanup to delete the integration worktree; a sortie with no tasks and no criteria reported success. The repair/verifier ID overlaps are code-review findings.</p>
+<div class="details"><div><h4>Smallest reliable fix</h4><p>Put workers under a distinct <code>tasks/</code> directory and give stored assignments an explicit kind. As an immediate patch, reject reserved IDs and prefixes. Require a nonempty contract and validate field shapes, evidence kinds, and an acyclic graph before creating a run.</p></div><div><h4>Regression to add</h4><p>Cover reserved IDs, generated verifier collisions, self-dependencies, cycles, empty criteria, and malformed JavaScript exports. Keep an empty task list available only if verification-only sorties are intentional.</p></div></div>
+</article>
+
+<article class="finding" id="F05" data-priority="high" data-proof="reproduced">
+<div class="labels"><span>F05</span><span class="tag high">High</span><span class="tag proof">Reproduced</span><span>Concurrency</span></div>
+<h3><a href="#F05">A failed task leaves sibling workers using a closed database</a></h3>
+<p class="refs"><a href="../src/runtime.ts">src/runtime.ts</a> lines 73–90, 202–205, 246–250, 277–281</p>
+<p><code>Promise.all</code> rejects as soon as one assignment exhausts its attempts. The run handler marks the run failed and closes its store while sibling assignments remain active. Their subsequent events and state updates use that closed connection. With live workers, the process may still be doing provider work after status says failed.</p>
+<p class="observed">Probe: one fake worker failed while another waited. <code>executeRun</code> returned before the slow worker finished; its later event raised a closed-database error.</p>
+<div class="details"><div><h4>Smallest reliable fix</h4><p>Keep ownership of all dispatched promises until they settle. On fatal failure, choose an explicit drain or abort policy, then await all assignments before writing final status and closing the store. Keep any produced work recoverable.</p></div><div><h4>Regression to add</h4><p>A two-worker failure test should assert that no adapter is active and no callback occurs after finalization. Test cancellation at the same boundary. The current success fixtures all use concurrency one.</p></div></div>
+</article>
+
+<article class="finding" id="F06" data-priority="medium" data-proof="review">
+<div class="labels"><span>F06</span><span class="tag medium">Medium</span><span class="tag">Code review</span><span>Provider fallback</span></div>
+<h3><a href="#F06">A fallback provider receives the previous provider's session ID</a></h3>
+<p class="refs"><a href="../src/runtime.ts">src/runtime.ts</a> lines 234–239, 265–280, 340–355 · <a href="../src/store.ts">src/store.ts</a> task schema · <a href="../src/adapters/cursor.ts">cursor.ts</a> lines 50–52 · <a href="../src/adapters/codex.ts">codex.ts</a> lines 14–16</p>
+<p>The task stores one <code>session_id</code>, with no provider or model identity. The next route receives that value unchanged. If Cursor emits a session and then fails, a Codex fallback calls <code>resumeThread</code> with the Cursor ID. The reverse direction and verifier fallback have the same problem.</p>
+<div class="details"><div><h4>Smallest reliable fix</h4><p>Store session identity with provider, model, and assignment attempt. Reuse it only when compatible. Keep an old session for evidence while starting a new provider session. Resolve the route list once rather than rereading it mid-run.</p></div><div><h4>Regression to add</h4><p>Have the first adapter emit a session then fail. Assert that the second provider starts fresh. Add a separate test proving same-provider resume retains its intended session and worktree.</p></div></div>
+</article>
+
+<article class="finding" id="F07" data-priority="high" data-proof="reproduced">
+<div class="labels"><span>F07</span><span class="tag high">High</span><span class="tag proof">Reproduced</span><span>Provider result</span></div>
+<h3><a href="#F07">The Codex adapter returns success after a streamed failure</a></h3>
+<p class="refs"><a href="../src/adapters/codex.ts">src/adapters/codex.ts</a> lines 17–32 · installed <code>@openai/codex-sdk/dist/index.d.ts</code> lines 137–167</p>
+<p>The stream handler observes messages and commands but ignores <code>turn.failed</code> and <code>error</code>. It returns normally when the stream ends, without requiring <code>turn.completed</code>. If a worker left partial edits, the runtime can commit them as a successful assignment. An empty verifier result fails closed during parsing, but it does not trigger the adapter fallback that a provider failure should.</p>
+<p class="observed">Probe: replaced the SDK thread with a fake stream containing <code>turn.failed</code>. The real adapter resolved with an empty <code>finalText</code>. No Codex service was called.</p>
+<div class="details"><div><h4>Smallest reliable fix</h4><p>Throw on SDK failure events, require successful terminal completion, and preserve diagnostic text. Give both production adapters the same success contract.</p></div><div><h4>Regression to add</h4><p>Test failure before output, failure after partial output, an abruptly ended stream, and normal completion. Also close Cursor's abort gap while <code>Agent.create</code> or <code>agent.send</code> is pending, and handle cancellation promise rejection.</p></div></div>
+</article>
+
+<article class="finding" id="F08" data-priority="medium" data-proof="reproduced">
+<div class="labels"><span>F08</span><span class="tag medium">Medium</span><span class="tag proof">Reproduced</span><span>Reproducibility</span></div>
+<h3><a href="#F08">The approved run does not freeze its base commit or execution plan</a></h3>
+<p class="refs"><a href="../src/cli.ts">src/cli.ts</a> lines 63–87 · <a href="../src/runtime.ts">src/runtime.ts</a> lines 43–46, 65–68, 94–97 · <a href="../src/routing.ts">src/routing.ts</a> lines 40–46</p>
+<p>The run stores a branch name rather than its SHA. The runner resolves that name later. It also reloads the sortie and only hashes the contract, allowing task prompts, limits, and PR settings to change while keeping the same approval hash. Routing loads again at dispatch. These are reproducibility gaps even on a trusted host.</p>
+<p class="observed">Probe: advanced <code>main</code> after creating the run record and before execution. The run included the later commit. Sortie and routing drift are established by code review.</p>
+<div class="details"><div><h4>Smallest reliable fix</h4><p>Persist a base SHA separately from the PR base branch, plus the resolved sortie and route lists. Resume from those values. Keep the contract hash as the human acceptance reference.</p></div><div><h4>Regression to add</h4><p>Move the branch, edit the sortie, and change the routing file after launch. The queued or resumed run must retain its original plan, or reject the drift explicitly.</p></div></div>
+</article>
+
+<article class="finding" id="F09" data-priority="high" data-proof="review">
+<div class="labels"><span>F09</span><span class="tag high">High</span><span class="tag">Code review</span><span>Runner ownership</span></div>
+<h3><a href="#F09">Resume can start a second runner before the first claims the run</a></h3>
+<p class="refs"><a href="../src/cli.ts">src/cli.ts</a> lines 118–125, 129–141, 169–182 · <a href="../src/runtime.ts">src/runtime.ts</a> lines 64–71 · <a href="../src/store.ts">src/store.ts</a> lines 109–115</p>
+<p>Launch and resume spawn a detached child but do not atomically claim the run. The PID appears only after the child loads the sortie. Two resume commands can both see no live PID and launch competing runners. Both can operate on the same worktrees and overwrite state. A stored PID alone also cannot distinguish the original runner from a reused PID.</p>
+<div class="details"><div><h4>Smallest reliable fix</h4><p>Use a transactional claim with an owner token and compare-and-set state changes. Only the owner may finalize. Handle child spawn errors and acknowledge startup before reporting it queued successfully. Reconcile cancellation when no runner remains.</p></div><div><h4>Regression to add</h4><p>Race two resumes while startup is delayed. Exactly one runner should enter the mission. Test spawn failure, stale ownership, and cancelling a paused run; today a paused cancellation can remain “cancelling” indefinitely.</p></div></div>
+</article>
+
+<article class="finding" id="F10" data-priority="medium" data-proof="review">
+<div class="labels"><span>F10</span><span class="tag medium">Medium</span><span class="tag">Code review</span><span>Resource bounds</span></div>
+<h3><a href="#F10">A command can hang the run or fill memory with output</a></h3>
+<p class="refs"><a href="../src/process.ts">src/process.ts</a> lines 9–32 · <a href="../src/runtime.ts">src/runtime.ts</a> lines 298–303 · <a href="../src/git.ts">src/git.ts</a> lines 63–82</p>
+<p>The command helper concatenates all stdout and stderr in memory and has no deadline. The runtime then stores full check output in SQLite. A hanging test, Git credential prompt, or noisy command can keep a run alive indefinitely or exhaust memory. Git and PR operations do not receive the run's abort signal.</p>
+<div class="details"><div><h4>Smallest reliable fix</h4><p>Add deadlines and cancellation to the shared process helper. Stream full output to a run log with a retention limit and retain a bounded tail for errors and evidence. Ensure descendant processes terminate, and record timeout or signal termination distinctly from a normal exit.</p></div><div><h4>Regression to add</h4><p>Exercise a hanging child, a child that spawns a descendant, a large-output command, and cancellation during push with a local fake executable. Assert bounded memory and no surviving children.</p></div></div>
+</article>
+
+<article class="finding" id="F11" data-priority="medium" data-proof="review">
+<div class="labels"><span>F11</span><span class="tag medium">Medium</span><span class="tag">Code review</span><span>Verifier enforcement</span></div>
+<h3><a href="#F11">Verifier mutation detection misses changes on failure and in already-dirty files</a></h3>
+<p class="refs"><a href="../src/runtime.ts">src/runtime.ts</a> lines 339–355, 377–386</p>
+<p>The runtime compares HEAD and <code>git status --porcelain</code> only after a successful adapter return. If an adapter writes and then throws, the next verifier can inspect contaminated state. A file that was already dirty can change content while its porcelain status stays identical. The sandbox remains the primary control; this check does not fully enforce the runtime's claimed invariant.</p>
+<div class="details"><div><h4>Smallest reliable fix</h4><p>Start verification from a clean, known commit. Check content integrity in a <code>finally</code> path and reject mutation before fallback. Require a nonempty evidence string for an accepted JSON verdict; the current parser accepts <code>{"accepted":true}</code> with a placeholder.</p></div><div><h4>Regression to add</h4><p>Use a fake verifier that modifies then throws, one that edits an already-dirty file, and one that accepts without evidence. None should yield acceptance or silently contaminate a fallback verifier.</p></div></div>
+</article>
+<p id="empty" hidden>No findings match the current filters.</p>
+</section>
+
+<section id="sequence">
+<h2>Recommended order</h2>
+<div class="steps">
+<div class="step"><div class="number">01 / Protect acceptance</div><h3>Make “passed” mean the committed result passed</h3><p>Address F01, F04, F07, and F11. These are bounded changes with deterministic tests. Reject invalid sorties before creating worktrees.</p></div>
+<div class="step"><div class="number">02 / Make recovery coherent</div><h3>Give each assignment a recoverable lifecycle</h3><p>Address F02, F03, F05, F06, and F09 together. Use typed records, transactional state changes, and one shared integration path. Avoid separate repair recovery rules.</p></div>
+<div class="step"><div class="number">03 / Prove the live path</div><h3>Freeze inputs and bound execution</h3><p>Address F08 and F10. Then complete the existing TODO's live Cursor implementation, Codex verification, and interrupted-run recovery exercises.</p></div>
+</div>
+<p>No rewrite is warranted. The existing provider seam earns its keep. Do not add an ORM, event-sourcing framework, plugin registry, distributed scheduler, or dashboard to solve these local lifecycle problems.</p>
+<p class="muted">Small cleanup can accompany the fixes: remove unused <code>byId</code> in <code>runtime.ts:176</code>, centralize the Cursor model default, close CLI resources on error, remove the scripted delay's abort listener after completion, and restore routing environment variables and delete temporary directories in the existing tests.</p>
+</section>
+
+<section id="verification">
+<h2>Verification and limits</h2>
+<div class="overview"><div><h3>What ran</h3><p><code>pnpm check &amp;&amp; pnpm test &amp;&amp; pnpm build</code> completed successfully. All seven existing tests passed. Eight additional audit probes reproduced current defects in temporary repositories with fake workers.</p><pre>node --import tsx reports/audit-probes.mjs
+# Eight observations; assertion failure exits nonzero.
+# No Cursor, Codex service, GitHub, push, or PR calls.</pre><p><a href="audit-probes.mjs">Download the reproduction script</a> · <a href="audit-evidence.json">Read the recorded observations</a></p><p>The probes intentionally assert that the defects exist. After fixes, convert the relevant cases into regression tests that assert the corrected behavior.</p></div><div><h3>What remains unproven</h3><p>No live provider sortie, SDK sandbox escape test, remote publication, or real process-kill recovery run was performed. The crash probes seed the state left at a specific interruption point. The Codex failure probe exercises its real adapter against a fake SDK stream.</p><p>The review covered every source file, the existing tests, package/compiler configuration, README, TODO, and the installed Codex SDK event declarations. It was not a dependency vulnerability scan or a review of the private Notion devlog.</p><p>Runtime code and repository build status were left unchanged. This report and its evidence are audit artifacts, not shipped implementation work.</p></div></div>
+</section>
+<footer>Muster · Local project audit · 11 September 2026<br>Report works offline, filters locally, and prints all findings regardless of the current filter. Source links are relative to this repository.</footer>
+</main>
+<script>
+const cards=[...document.querySelectorAll('.finding')];
+const buttons=[...document.querySelectorAll('[data-filter]')];
+const search=document.querySelector('#search');
+let filter='all';
+function applyFilters(){let visible=0;const query=search.value.trim().toLowerCase();for(const card of cards){const selected=filter==='all'||card.dataset.priority===filter||card.dataset.proof===filter;card.hidden=!(selected&&card.textContent.toLowerCase().includes(query));if(!card.hidden)visible++;}document.querySelector('#count').textContent=`${visible} of ${cards.length} findings`;document.querySelector('#empty').hidden=visible!==0;}
+for(const button of buttons){button.addEventListener('click',()=>{filter=button.dataset.filter;for(const other of buttons)other.setAttribute('aria-pressed',String(other===button));applyFilters();});}
+search.addEventListener('input',applyFilters);
+function revealLinkedFinding(){const target=document.getElementById(location.hash.slice(1));if(target?.classList.contains('finding')&&target.hidden){filter='all';search.value='';for(const button of buttons)button.setAttribute('aria-pressed',String(button.dataset.filter==='all'));applyFilters();target.scrollIntoView();}}
+window.addEventListener('hashchange',revealLinkedFinding);
+</script>
+</body>
+</html>
