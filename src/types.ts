@@ -1,4 +1,4 @@
-export type Provider = "cursor" | "codex" | "scripted";
+export type Provider = "cursor" | "codex" | "claude" | "scripted";
 
 export type Role = {
   taskType: string;

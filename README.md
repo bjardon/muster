@@ -2,11 +2,11 @@
 
 Muster runs disposable TypeScript mission programs called sorties. A local orchestration agent turns a software spec into an acceptance contract and a sortie. After a human approves the contract, Muster coordinates coding agents in isolated Git worktrees, records the run in SQLite, verifies the result, and opens a draft PR only when every criterion passes.
 
-This is a personal experiment for trusted local repositories. It currently targets Cursor and Codex running on the same machine as the repository. Cursor runs with its SDK sandbox enabled, project settings only, and a task-specific tool allowlist. Codex uses its SDK's read-only or workspace-write sandbox, which can still read user-level instructions outside the worktree on macOS.
+This is a personal experiment for trusted local repositories. It currently targets Cursor, Claude Code, and Codex running on the same machine as the repository. Cursor runs with its SDK sandbox enabled, project settings only, and a task-specific tool allowlist. Codex uses its SDK's read-only or workspace-write sandbox, which can still read user-level instructions outside the worktree on macOS.
 
 ## Install
 
-Requirements: Node.js 24+, Git, GitHub CLI, an authenticated Codex CLI, and a Cursor plan with SDK access.
+Requirements: Node.js 24+, Git, GitHub CLI, authentication for the providers you route to: Codex CLI, Cursor with SDK access, or Claude Code.
 
 ```sh
 pnpm install
@@ -21,7 +21,7 @@ muster cursor-login
 muster cursor-status
 ```
 
-For unattended hosts, set `CURSOR_API_KEY` instead. Muster uses the existing Codex login. It does not manage provider keys or track spend.
+For unattended hosts, set `CURSOR_API_KEY` instead. For Claude, run `claude auth login` and confirm with `claude auth status`. Muster uses the existing Claude Code and Codex logins. It does not manage provider keys or track spend.
 
 ## Model routing
 
@@ -42,6 +42,21 @@ A sortie requests task types rather than naming providers. Muster reads `~/.conf
 ```
 
 Cursor's supported Grok model IDs are `grok-4.6` and `grok-4.5`. Grok 4.6 is the default. Model access still depends on the Cursor account used to authenticate the SDK.
+
+To use the earlier Claude implementation and Codex verification pairing, save this as `~/.config/muster/routing.json`:
+
+```json
+{
+  "taskTypes": {
+    "implementation": [{ "provider": "claude" }],
+    "verification": [{ "provider": "codex" }]
+  }
+}
+```
+
+Claude uses its default model unless a route includes `model`. Claude workers have Read, Glob, Grep, Edit, and Write tools; Claude verifiers have only Read, Glob, and Grep. A pre-tool hook checks paths against the assigned worktree, including symlink targets, and denies Git metadata access. Shell, MCP, and delegation tools are unavailable. The runtime runs command checks. The adapter persists sessions, forwards cancellation, and rejects failed or incomplete SDK results.
+
+Claude does not load user or project settings, hooks, or plugins. Its tool checks are application permissions, not an OS sandbox; the trusted-host and trusted-repository assumption still applies.
 
 Set `MUSTER_ROUTING_FILE` to use a different file. Muster has one routing configuration for now; named profiles are deferred.
 
@@ -80,4 +95,4 @@ pnpm test
 pnpm build
 ```
 
-The tests use a deterministic local worker. They do not call Cursor, Codex, or GitHub.
+The tests use a deterministic local worker. They do not call Cursor, Claude, Codex, or GitHub.

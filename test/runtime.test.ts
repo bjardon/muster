@@ -82,7 +82,7 @@ test("cancel stops a detached runner and its active worker", async () => {
   assert.equal(await waitForStatus(fixture.repo, fixture.runId, ["cancelled", "failed"]), "cancelled");
 });
 
-test("routing accepts Cursor and rejects the retired Claude provider", async () => {
+test("routing accepts Cursor and Claude and rejects unknown providers", async () => {
   const directory = await mkdtemp(join(tmpdir(), "muster-routing-test-"));
   const routingPath = join(directory, "routing.json");
   const previousPath = process.env.MUSTER_ROUTING_FILE;
@@ -103,6 +103,8 @@ test("routing accepts Cursor and rejects the retired Claude provider", async () 
         implementation: [{ provider: "claude" }],
       },
     }), "utf8");
+    assert.deepEqual(routesFor({ taskType: "implementation" }, loadRouting()), [{ provider: "claude" }]);
+    await writeFile(routingPath, JSON.stringify({ taskTypes: { verification: [{ provider: "unknown" }] } }));
     assert.throws(() => loadRouting(), /Invalid provider/);
   } finally {
     if (previousPath === undefined) delete process.env.MUSTER_ROUTING_FILE;

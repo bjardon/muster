@@ -45,7 +45,7 @@ export function routesFor(role: Role, config = loadRouting()): RouteCandidate[] 
 }
 
 function validateCandidate(candidate: RouteCandidate, path: string, taskType: string): void {
-  const providers: Provider[] = ["cursor", "codex", "scripted"];
+  const providers: Provider[] = ["cursor", "codex", "claude", "scripted"];
   if (!candidate || !providers.includes(candidate.provider)) {
     throw new Error(`Invalid provider for ${taskType} in ${path}`);
   }
